@@ -1,101 +1,109 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import ExcelJS from "exceljs";
+import Table from "./(components)/Table";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const tableRef = useRef<HTMLDivElement | null>(null);
+  const [file, setFile] = useState<FileList | null>(null);
+  const [fileData, setFileData] = useState<any[]>([]);
+  useEffect(() => {}, [file]);
+  const handleDownloadPdf = () => {
+    const input = tableRef.current;
+    if (!input) {
+      return;
+    }
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    // Use html2canvas to capture the component's HTML
+    html2canvas(input).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png"); // Convert canvas to image
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "A4",
+        putOnlyUsedFonts: true,
+      });
+      const imgWidth = pdf.internal.pageSize.getWidth(); // Use the full width of the page
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calculate image height maintaining aspect ratio
+      let heightLeft = imgHeight;
+
+      let position = 0;
+
+      // Add the image to the PDF, handling multi-page if needed
+      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight); // Start at (0,0)
+      heightLeft -= pdf.internal.pageSize.getHeight(); // Adjust height left for page size
+
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+      }
+
+      pdf.save("download.pdf"); // Save the PDF
+    });
+  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!file) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file[0]); // Read file as ArrayBuffer for ExcelJS
+
+    reader.onload = async (event) => {
+      const buffer = event.target?.result as ArrayBuffer;
+
+      // Create a new workbook instance
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(buffer); // Load the buffer
+
+      const worksheet = workbook.getWorksheet(1); // Get the first sheet
+      const rows: any[] = [];
+
+      // Iterate over rows in the worksheet and extract data
+      if (worksheet !== undefined) {
+        worksheet.eachRow((row, rowNumber) => {
+          const rowData = row.values;
+          rows.push(rowData);
+        });
+      }
+
+      // Save data to state
+      setFileData(rows);
+    };
+
+    reader.onerror = (error) => {
+      console.error("Error reading file:", error);
+    };
+    const doc = new jsPDF();
+  };
+  return (
+    <div>
+      <form onSubmit={handleSubmit} method="post">
+        <label className="label" htmlFor="file">
+          File
+        </label>
+        <input
+          type="file"
+          name="file"
+          accept=".xls,.xlsx"
+          className="file-input file-input-bordered"
+          id="file"
+          onChange={(e) => setFile(e.target.files)}
+        />
+        <button type="submit" className="btn">
+          Submit
+        </button>
+      </form>
+      <button onClick={handleDownloadPdf} className="btn btn-primary">
+        Download PDF
+      </button>
+      <div className="m-6" ref={tableRef}>
+        <Table data={fileData} />
+      </div>
     </div>
   );
 }
