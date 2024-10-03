@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import ExcelJS from "exceljs";
-import Table from "./(components)/Table";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { Barang } from "./(objects)/Barang";
+import TableBarang from "./(components)/TableBarang";
 
 export default function Home() {
   const tableRef = useRef<HTMLDivElement | null>(null);
   const [file, setFile] = useState<FileList | null>(null);
-  const [fileData, setFileData] = useState<any[]>([]);
+  const [fileData, setFileData] = useState<Barang[]>([]);
+  const [tableHeader, setTableHeader] = useState<string[]>([]);
   useEffect(() => {}, [file]);
   const handleDownloadPdf = () => {
     const input = tableRef.current;
@@ -61,13 +63,31 @@ export default function Home() {
       await workbook.xlsx.load(buffer); // Load the buffer
 
       const worksheet = workbook.getWorksheet(1); // Get the first sheet
-      const rows: any[] = [];
+      const rows: Barang[] = [];
 
       // Iterate over rows in the worksheet and extract data
       if (worksheet !== undefined) {
-        worksheet.eachRow((row, rowNumber) => {
+        worksheet.eachRow((row, rowIndex) => {
           const rowData = row.values;
-          rows.push(rowData);
+          if (Array.isArray(rowData)) {
+            if (rowIndex === 1) {
+              const tblHdr: string[] = [];
+              tblHdr.push(String(rowData[1]));
+              tblHdr.push(String(rowData[2]));
+              tblHdr.push(String(rowData[3]));
+              tblHdr.push(String(rowData[4]));
+              tblHdr.push(String(rowData[5]));
+              setTableHeader(tblHdr);
+            } else {
+              const barang = new Barang();
+              barang.name = String(rowData[1]);
+              barang.qty = Number(rowData[2]);
+              barang.price = Number(rowData[3]);
+              barang.discount = Number(rowData[4]);
+              barang.subtotal = Number(rowData[5]);
+              rows.push(barang);
+            }
+          }
         });
       }
 
@@ -78,7 +98,6 @@ export default function Home() {
     reader.onerror = (error) => {
       console.error("Error reading file:", error);
     };
-    const doc = new jsPDF();
   };
   return (
     <div>
@@ -102,7 +121,7 @@ export default function Home() {
         Download PDF
       </button>
       <div className="m-6" ref={tableRef}>
-        <Table data={fileData} />
+        <TableBarang tableHeader={tableHeader} data={fileData} />
       </div>
     </div>
   );

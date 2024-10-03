@@ -1,42 +1,45 @@
 "use client";
 import React from "react";
+import { Barang } from "../(objects)/Barang";
 type TableProps = {
-  data: any[][]; // Specify that data is an array of any type
+  data: Barang[];
+  tableHeader: string[];
 };
-export default function Table({ data }: TableProps) {
+export default function TableBarang({ data, tableHeader }: TableProps) {
   return (
     <div>
       <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
         <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
-            {data[0] &&
-              data[0].map((tHead: string, i: number) => (
+            {tableHeader.map((tHead: string | number, i: number) => {
+              return (
                 <th
                   className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400"
                   key={i}
                 >
-                  {tHead}
+                  {String(tHead)}
                 </th>
-              ))}
+              );
+            })}
           </tr>
         </thead>
         <tbody>
-          {data.map((tBody: string[], i: number) => (
-            <tr>
+          {data.map((tBody: Barang, i: number) => (
+            <tr key={i}>
               <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                {tBody[1]}
+                {tBody.name}
               </td>
               <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                {tBody[2]}
+                {tBody.qty}
               </td>
               <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                {tBody[3]}
+                {tBody.price}
               </td>
               <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                {tBody[4]}
+                {tBody.discount}
               </td>
               <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                {tBody[5]}
+                {tBody.subtotal}
               </td>
             </tr>
           ))}
