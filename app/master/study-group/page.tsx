@@ -1,7 +1,6 @@
 "use client";
 import TableUniversal from "@/app/(components)/TableUniversal";
 import ENDPOINT from "@/app/(config)/url";
-import { Stundent } from "@/app/(objects)/Students";
 import { getFetch, postFetch } from "@/app/(util)/request.util";
 import React, { useEffect, useState } from "react";
 export default function Page() {
@@ -18,7 +17,7 @@ export default function Page() {
     postFetch(ENDPOINT.LINK_STUDY_SUBJECT, {
       subject_id: subject,
       study_group_id: studyGroupId,
-    }).then((res) => {
+    }).then(() => {
       fetchData();
     });
   }
@@ -29,7 +28,7 @@ export default function Page() {
     postFetch(ENDPOINT.DETACH_STUDY_SUBJECT, {
       subject_id: subject,
       study_group_id: studyGroupId,
-    }).then((res) => {
+    }).then(() => {
       fetchData();
     });
   }
@@ -46,7 +45,7 @@ export default function Page() {
     });
   }
 
-  const fetchData = async (search?: string) => {
+  const fetchData = async () => {
     getFetch(ENDPOINT.MASTER_STUDY_GROUP).then((res) => {
       const tblData: string[][] = [];
       const addCol: React.JSX.Element[][] = [];

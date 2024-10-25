@@ -29,6 +29,7 @@ export default function RootLayout({
     { name: "Student", href: "/master/student" },
     { name: "Subject", href: "/master/subject" },
     { name: "Study Group", href: "/master/study-group" },
+    { name: "Report", href: "/report" },
   ];
   return (
     <html lang="en">

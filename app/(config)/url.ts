@@ -1,6 +1,7 @@
 import CONFIG from "./config"
 
 const ENDPOINT = {
+    REPORT : `${CONFIG.BASE_URL}/semester-report/list`,
     STUDENT_CREATE_BATCH: `${CONFIG.BASE_URL}/students/create-batch`,
     SUBJECT_CREATE_BATCH: `${CONFIG.BASE_URL}/subjects/create-batch`,
     MASTER_STUDENT: `${CONFIG.BASE_URL}/students`,

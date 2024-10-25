@@ -3,11 +3,11 @@ import { Gender } from "./gender.enum";
 import { Guardian } from "./Guardian";
 import { Mother } from "./Mother";
 
-export class Stundent {
-    name!: string;
-    studentSchoolId!: number
-    gender!: Gender
-    studentNationalId!: string
+export interface Stundent {
+    name: string;
+    studentSchoolId: number
+    gender: Gender
+    studentNationalId: string
     placeOfBirth?: string
     dateOfBirth?: string
     nik?: string
@@ -23,7 +23,7 @@ export class Stundent {
     phoneNumber?: string
     email?: string
     skhun?: string
-    isKps!: boolean
+    isKps: boolean
     kpsId?: string
     father?: Father
     mother?: Mother
@@ -39,11 +39,11 @@ export class Stundent {
     bank?: string
     bankAccountNumber?: string
     bankAccountName?: string
-    isPipWorthy?: boolean = false
+    isPipWorthy?: boolean
     reasonPipWorthy?: string
     disability?: string
     juniorSchoolName?: string
-    childOrder?: number = 1
+    childOrder?: number
     latitude?: string
     longitude?: string
     familyCardId?: string

@@ -1,4 +1,4 @@
-export class Father {
+export interface Father {
     name?: string;
     yearOfBirth?: number;
     education?: string;

@@ -1,4 +1,4 @@
-export class Mother {
+export interface Mother {
     name?: string;
     yearOfBirth?: number;
     education?: string;

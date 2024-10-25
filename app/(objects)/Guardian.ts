@@ -1,4 +1,4 @@
-export class Guardian {
+export interface Guardian {
     name?: string;
     yearOfBirth?: number;
     education?: string;
