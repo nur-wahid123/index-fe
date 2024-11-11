@@ -1,17 +1,19 @@
-import { Father } from "./Father";
-import { Gender } from "./gender.enum";
-import { Guardian } from "./Guardian";
-import { Mother } from "./Mother";
+import { Father } from "@/app/(objects)/Father";
+import { Gender } from "@/app/(objects)/gender.enum";
+import { Guardian } from "@/app/(objects)/Guardian";
+import { Mother } from "@/app/(objects)/Mother";
+import { SemesterReport } from "@/source/types/semester-report.type";
+import { StudyGroup } from "@/source/types/study-group";
 
-export class Stundent {
-    name!: string;
-    studentSchoolId!: number
-    gender!: Gender
-    studentNationalId!: string
+export interface StundentView {
+    name: string;
+    studentSchoolId: number
+    gender: Gender
+    student_national_id: string
     placeOfBirth?: string
     dateOfBirth?: string
     nik?: string
-    religion?: string
+    religion?: Religion
     address?: string
     hamlet?: string
     ward?: string
@@ -23,12 +25,12 @@ export class Stundent {
     phoneNumber?: string
     email?: string
     skhun?: string
-    isKps!: boolean
+    isKps: boolean
     kpsId?: string
     father?: Father
     mother?: Mother
     guardian?: Guardian
-    studyGroup?: string
+    study_group?: StudyGroup
     nationalTestNumber?: string
     graduationSertificateNumber?: string
     isKip?: boolean
@@ -52,4 +54,10 @@ export class Stundent {
     headCircumference?: number
     numberOfSiblings?: number
     distanceFromSchool?: number
+    semesterReports: SemesterReport[]
+}
+
+export interface Religion{
+    id:number
+    name:string
 }
