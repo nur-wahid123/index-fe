@@ -1,7 +1,7 @@
-import { Father } from "@/app/(objects)/Father";
-import { Gender } from "@/app/(objects)/gender.enum";
-import { Guardian } from "@/app/(objects)/Guardian";
-import { Mother } from "@/app/(objects)/Mother";
+import { Father } from "@/source/objects/Father";
+import { Gender } from "@/source/objects/gender.enum";
+import { Guardian } from "@/source/objects/Guardian";
+import { Mother } from "@/source/objects/Mother";
 import { SemesterReport } from "@/source/types/semester-report.type";
 import { StudyGroup } from "@/source/types/study-group";
 

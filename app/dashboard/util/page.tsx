@@ -2,14 +2,17 @@
 import { useEffect, useState } from "react";
 import ExcelJS from "exceljs";
 import Stats from "@/source/components/stats.component";
-import { Stundent } from "@/app/(objects)/Students";
-import { Subject } from "@/app/(objects)/Subject";
-import ENDPOINT from "@/app/(config)/url";
-import { Gender } from "@/app/(objects)/gender.enum";
+import { Stundent } from "@/source/objects/Students";
+import { Subject } from "@/source/objects/Subject";
+import ENDPOINT from "@/source/config/url";
+import { Gender } from "@/source/objects/gender.enum";
 import { formatDate } from "@/source/util/date.util";
-import { Father } from "@/app/(objects)/Father";
-import { Mother } from "@/app/(objects)/Mother";
-import { Guardian } from "@/app/(objects)/Guardian";
+import { Father } from "@/source/objects/Father";
+import { Mother } from "@/source/objects/Mother";
+import { Guardian } from "@/source/objects/Guardian";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [files, setFiles] = useState<{ [key: string]: FileList | null }>({
@@ -233,17 +236,17 @@ export default function Home() {
     };
   };
   return (
-    <div>
+    <div className="p-4 flex flex-col gap-3">
       {/* <Stats/> */}
       <form
         className=" max-w-xl flex flex-col gap-3"
         onSubmit={handleSubmit}
         method="post"
       >
-        <label className="label" htmlFor="file">
+        <Label className="label">
           Daftar Peserta Didik
-        </label>
-        <input
+        </Label>
+        <Input
           type="file"
           name="file"
           accept=".xls,.xlsx"
@@ -251,22 +254,22 @@ export default function Home() {
           id="file"
           onChange={(e) => handleFileChange(e, "inputOne")}
         />
-        <button type="submit" className="btn">
+        <Button type="submit" className="btn">
           Submit
-        </button>
+        </Button>
       </form>
-      <button onClick={handleDownloadPdf} className="btn btn-primary">
+      <Button onClick={handleDownloadPdf} className="btn btn-primary">
         Seperate Student into Chunk
-      </button>
+      </Button>
       <form
         className=" max-w-xl flex flex-col gap-3"
         onSubmit={handleSubmit2}
         method="post"
       >
-        <label className="label" htmlFor="file">
+        <Label className="label">
           Daftar Mata Pelajaran
-        </label>
-        <input
+        </Label>
+        <Input
           type="file"
           name="file"
           accept=".xls,.xlsx"
@@ -274,20 +277,20 @@ export default function Home() {
           id="file"
           onChange={(e) => handleFileChange(e, "inputTwo")}
         />
-        <button type="submit" className="btn">
+        <Button type="submit" className="btn">
           Submit
-        </button>
+        </Button>
       </form>
-      <button className="btn btn-success" onClick={handleSendData}>
+      <Button className="btn btn-success" onClick={handleSendData}>
         Input to Database
-      </button>
+      </Button>
       <div>
         {chunks.map((chunk, index) => (
           <div key={index}>
             <p>Chunk {index}</p>
-            <button className="btn" onClick={() => sendData(chunk, index)}>
+            <Button className="btn" onClick={() => sendData(chunk, index)}>
               Send Data
-            </button>
+            </Button>
           </div>
         ))}
       </div>

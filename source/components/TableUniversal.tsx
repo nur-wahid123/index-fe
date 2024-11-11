@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Barang } from "../(objects)/Barang";
+import { Barang } from "../objects/Barang";
 type TableProps = {
   data: string[][];
   tableHeader: string[];

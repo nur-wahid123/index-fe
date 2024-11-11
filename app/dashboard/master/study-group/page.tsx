@@ -1,6 +1,5 @@
 "use client";
-import TableUniversal from "@/app/(components)/TableUniversal";
-import ENDPOINT from "@/app/(config)/url";
+import ENDPOINT from "@/source/config/url";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StudyGroup } from "@/source/types/study-group";
@@ -15,17 +14,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Eye } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function Page() {
   const [subject, setSubject] = useState<{ name: string; id: number }[]>([]);
   const [data, setData] = useState<StudyGroup[]>([]);
   const [search, setSearch] = useState<string>("");
-  const [additionalColumn, setAditionalColumn] = useState<
-    React.JSX.Element[][]
-  >([]);
 
-  function linkSubject(studyGroupId: number, subject: number) {
-    postFetch(ENDPOINT.LINK_STUDY_SUBJECT, {
+  async function linkSubject(studyGroupId: number, subject: number) {
+    await axiosInstance.post(ENDPOINT.LINK_STUDY_SUBJECT, {
       subject_id: subject,
       study_group_id: studyGroupId,
     }).then(() => {
@@ -33,10 +30,8 @@ export default function Page() {
     });
   }
 
-  function detachSubject(studyGroupId: number, subject: number) {
-    // const confirmation = confirm("Yakin ingin menambah pelajaran?");
-    // if (confirmation === false) return;
-    postFetch(ENDPOINT.DETACH_STUDY_SUBJECT, {
+  async function detachSubject(studyGroupId: number, subject: number) {
+    await axiosInstance.post(ENDPOINT.DETACH_STUDY_SUBJECT, {
       subject_id: subject,
       study_group_id: studyGroupId,
     }).then(() => {
@@ -44,8 +39,8 @@ export default function Page() {
     });
   }
 
-  function fetchSubject() {
-    getFetch(ENDPOINT.MASTER_SUBJECT).then((res) => {
+  async function fetchSubject() {
+    await axiosInstance.get(ENDPOINT.MASTER_SUBJECT).then((res) => {
       if (Array.isArray(res)) {
         const arr: { name: string; id: number }[] = [];
         res.map((item) => {
@@ -82,22 +77,29 @@ export default function Page() {
 
   return (
     <div className="p-3">
-      <label className="label" htmlFor="search">
-        Search
-      </label>
-      <input
-        value={search}
-        className="input input-sm input-bordered"
-        onChange={(e) => setSearch(e.target.value)}
-        type="text"
-        name="search"
-        id="search"
-      />
+      <div>
+        <div>
+          <label className="label" htmlFor="search">
+            Search
+          </label>
+          <input
+            value={search}
+            className="input input-sm input-bordered"
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            name="search"
+            id="search"
+          />
+        </div>
+        <form>
+          <Label>Upload Rombel</Label>
+        </form>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
             {tableHeader.map((thead, i) => (
-              <TableHead>
+              <TableHead key={i}>
                 {thead}
               </TableHead>
             ))}
@@ -123,7 +125,7 @@ export default function Page() {
                 <Dialog>
                   <DialogTrigger>
                     <Button>
-                    Detail <Eye />
+                      Detail <Eye />
                     </Button>
                   </DialogTrigger>
                   <DialogContent>

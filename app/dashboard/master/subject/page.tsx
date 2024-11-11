@@ -1,7 +1,7 @@
 "use client";
-import TableUniversal from "@/app/(components)/TableUniversal";
-import ENDPOINT from "@/app/(config)/url";
-import { Stundent } from "@/app/(objects)/Students";
+import TableUniversal from "@/source/components/TableUniversal";
+import ENDPOINT from "@/source/config/url";
+import { Stundent } from "@/source/objects/Students";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -12,24 +12,13 @@ import React, { useEffect, useState } from "react";
 export default function Page() {
   const [data, setData] = useState<Subject[]>([]);
   const [search, setSearch] = useState<string>("");
-  const [additionalColumn, setAditionalColumn] = useState<
-    React.JSX.Element[][]
-  >([]);
   const fetchData = async (search?: string) => {
-    axiosInstance.get(ENDPOINT.MASTER_SUBJECT).then((res) => {
+    
+    await axiosInstance.get(ENDPOINT.MASTER_SUBJECT).then((res) => {
+      
       setData(res.data);
-    });
-  };
-
-  const fetchDataToArrayOfString = (data: Object[]): string[][] => {
-    const tblData: string[][] = [];
-    if (Array.isArray(data)) {
-      data.map((item) => {
-        const innerData: string[] = Object.values(item);
-        tblData.push(innerData);
-      });
-    }
-    return tblData;
+    })
+    .catch(err => console.log(err));
   };
 
   useEffect(() => {
@@ -74,7 +63,7 @@ export default function Page() {
         <TableHeader>
           <TableRow>
             {tableHeader.map((thead, i) => (
-              <TableHead>
+              <TableHead key={i}>
                 {thead}
               </TableHead>
             ))}

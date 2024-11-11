@@ -1,11 +1,15 @@
 "use client"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../components/ui/card"
+import { Label } from "../../../components/ui/label"
+import { Input } from "../../../components/ui/input"
+import { Button } from "../../../components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
+import axios from "axios"
+import ENDPOINT from "@/source/config/url"
+import ckie from "js-cookie"
+import React from "react"
 
 
 export const description = "A simple login form."
@@ -16,12 +20,20 @@ export const containerClassName = "w-full h-full"
 
 export default function LoginForm() {
   const router = useRouter()
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>)=>{
+  const [state, setState] = React.useState({
+    username: "",
+    password: "",
+  });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
-    router.push("/dashboard")
+    await axios.post(`${ENDPOINT.LOGIN}`,state)
+    .then(res => {
+      ckie.set("token",res.data.access_token)
+      router.push("/dashboard")
+    })
   }
   return (
-    <div className="flex h-screen w-full items-center justify-center px-4">
+    <div className="flex h-full w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
             <Link href="/" className="mb-7 w-fit">
@@ -38,6 +50,8 @@ export default function LoginForm() {
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
+                value={state.username}
+                onChange={(e) => setState({ ...state, username: e.target.value })}
                 type="text"
                 placeholder="username"
                 required
@@ -47,7 +61,9 @@ export default function LoginForm() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
               </div>
-              <Input id="password" type="password" required />
+              <Input id="password" value={state.password} onChange={(e) => setState({ ...state, password: e.target.value })}
+              type="password"
+               required />
             </div>
             <Button type="submit" className="w-full">
               Login

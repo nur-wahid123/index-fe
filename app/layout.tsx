@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Link from "next/link";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 const geistSans = localFont({
-  src: "./(fonts)/GeistVF.woff",
+  src: "./../source/fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./(fonts)/GeistMonoVF.woff",
+  src: "./../source/fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -22,9 +21,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode;}
+) {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Student", href: "/master/student" },

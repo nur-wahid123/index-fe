@@ -1,6 +1,6 @@
 "use client";
-import TableUniversal from "@/app/(components)/TableUniversal";
-import ENDPOINT from "@/app/(config)/url";
+import TableUniversal from "@/source/components/TableUniversal";
+import ENDPOINT from "@/source/config/url";
 import { axiosInstance, getFetch } from "@/source/util/request.util";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

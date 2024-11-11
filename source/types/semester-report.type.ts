@@ -1,4 +1,4 @@
-import { Stundent } from "@/app/(objects)/Students";
+import { Stundent } from "@/source/objects/Students";
 import { Score } from "./score";
 import { ExtracurricularScore } from "./extraculicular-score";
 

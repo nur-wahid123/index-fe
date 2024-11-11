@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { error } from "console";
 import ShowSemesterReport from "@/source/components/show-semester-report.components";
 import { axiosInstance } from "@/source/util/request.util";
-import ENDPOINT from "@/app/(config)/url";
+import ENDPOINT from "@/source/config/url";
 
 export default function Page() {
     const [data, setData] = React.useState<SemesterReport[]>([])
