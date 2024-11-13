@@ -2,18 +2,13 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
   Command,
   Database,
-  Frame,
-  LifeBuoy,
-  Map,
   NotebookPen,
-  PieChart,
   Send,
-  Settings2,
-  SquareTerminal,
+  Tags,
+  User,
+  Users,
   UtilityPoleIcon,
 } from "lucide-react"
 
@@ -31,30 +26,36 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { PaperPlaneIcon } from "@radix-ui/react-icons"
+import { axiosInstance } from "@/source/util/request.util"
+import ENDPOINT from "@/source/config/url"
+import { JwtPayload } from "@/source/types/jwt-payload.interface"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: [
     {
-      title: "Master",
+      title: "Master Data",
       url: "#",
       icon: Database,
       isActive: true,
       items: [
         {
-          title: "Subject",
+          title: "Mata Pelajaran",
+          icon: Tags,
           url: "/dashboard/master/subject",
         },
         {
-          title: "Study Group",
+          title: "Kelas",
+          icon: NotebookPen,
+          url: "/dashboard/master/class",
+        },
+        {
+          title: "Rombongan Belajar",
+          icon: Users,
           url: "/dashboard/master/study-group",
         },
         {
-          title: "Student",
+          title: "Siswa",
+          icon: User,
           url: "/dashboard/master/student",
         },
       ],
@@ -83,6 +84,21 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [user, setUser] = React.useState<JwtPayload>({
+    email:"",
+    sub:0,
+    username:"",
+    avatar:""
+  });
+  const fetchUser = React.useCallback(async () => {
+     await axiosInstance.get(ENDPOINT.GET_PROFILE).then((res) => {
+       setUser(res.data.data);
+     })
+     .catch(err => console.log(err));
+  },[])
+  React.useEffect(() => {
+    fetchUser();
+  },[])
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -108,7 +124,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   )

@@ -24,21 +24,21 @@ export default function LoginForm() {
     username: "",
     password: "",
   });
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>)=>{
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await axios.post(`${ENDPOINT.LOGIN}`,state)
-    .then(res => {
-      ckie.set("token",res.data.access_token)
-      router.push("/dashboard")
-    })
+    await axios.post(`${ENDPOINT.LOGIN}`, state)
+      .then(res => {
+        ckie.set("token", res.data.data.access_token, { expires: 1 })
+        router.push("/dashboard")
+      })
   }
   return (
     <div className="flex h-full w-full items-center justify-center px-4">
       <Card className="mx-auto max-w-sm">
         <CardHeader>
-            <Link href="/" className="mb-7 w-fit">
-        <ArrowLeft/>
-            </Link>
+          <Link href="/" className="mb-7 w-fit">
+            <ArrowLeft />
+          </Link>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
             Enter your username below to login to your account
@@ -62,8 +62,8 @@ export default function LoginForm() {
                 <Label htmlFor="password">Password</Label>
               </div>
               <Input id="password" value={state.password} onChange={(e) => setState({ ...state, password: e.target.value })}
-              type="password"
-               required />
+                type="password"
+                required />
             </div>
             <Button type="submit" className="w-full">
               Login
