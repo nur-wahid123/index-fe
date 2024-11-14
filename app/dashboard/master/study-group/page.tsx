@@ -21,6 +21,7 @@ import PaginationSelf, { PaginateContentProps } from "@/components/pagination";
 import SearchBar from "@/components/search-bar";
 import AddStudyGroup from "@/source/components/study-group/add-study-group.component";
 import EditStudyGroup from "@/source/components/study-group/update-study-group.component";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@radix-ui/react-select";
 
 export default function Page() {
   const [subject, setSubject] = useState<Subject[]>([]);
@@ -113,8 +114,20 @@ export default function Page() {
       return;
     }
     await axiosInstance.delete(`${ENDPOINT.DELETE_STUDY_GROUP}/${id}`).then(() => {
-      
+      toaster.toast({
+        title: "Success",
+        description: "Rombel berhasil dihapus",
+        variant: "default",
+      })
+      reFetch();
     })
+    .catch(() => {
+      toaster.toast({
+        title: "Error",
+        description: "Gagal menghapus rombel",
+        variant: "destructive",
+      })
+    });
   }
 
   const tableHeader: string[] = [
@@ -134,6 +147,18 @@ export default function Page() {
             </Label>
             <SearchBar onSearch={handleSearch} />
           </div>
+          <Select value={pagination?.take?.toString()} onValueChange={(e) => setPagination({ ...pagination, take: Number(e), page: 1 })}>
+              <SelectTrigger className="w-[90px]">
+                <SelectValue placeholder="Rows" />
+              </SelectTrigger>
+              <SelectContent>
+                {[10, 20, 30, 40, 50].map((item) => (
+                  <SelectItem key={item} value={item.toString()}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           <AddStudyGroup reFetch={reFetch} />
           <PaginationSelf pagination={pagination} fetchData={fetchData} />
         </div>

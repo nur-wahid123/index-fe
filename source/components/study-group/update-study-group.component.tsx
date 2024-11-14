@@ -69,7 +69,7 @@ export default function EditStudyGroup({ studyGroupId, reFetch }: { studyGroupId
                                 <Button>Edit <Edit className=""></Edit></Button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Edit {value?.name ?? "Kelas"}</p>
+                                <p>Edit {value?.name ?? "Rombel"}</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -77,17 +77,17 @@ export default function EditStudyGroup({ studyGroupId, reFetch }: { studyGroupId
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit Kelas</DialogTitle>
+                    <DialogTitle>Edit Rombel</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <Label>Nama Kelas</Label>
+                    <Label>Nama Rombel</Label>
                     <Input
                         type="text"
                         value={value.name}
                         onChange={(e) => setValue({ ...value, name: e.target.value })}
                     />
                     <Button type="submit">
-                        Edit Kelas <LucideEdit3></LucideEdit3>
+                        Edit Rombel <LucideEdit3></LucideEdit3>
                     </Button>
                 </form>
             </DialogContent>

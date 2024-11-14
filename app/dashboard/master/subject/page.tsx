@@ -23,12 +23,15 @@ import { axiosInstance } from "@/source/util/request.util";
 import ENDPOINT from "@/source/config/url";
 import EditSubject from "@/source/components/subject/update-subject.component";
 import AddSubject from "@/source/components/subject/add-subject.component";
+import { Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 
 export default function Page() {
   const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState<PaginateContentProps>({});
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const toaster = useToast();
 
   const fetchData = React.useCallback(async (
     start: number,
@@ -65,6 +68,27 @@ export default function Page() {
     fetchData(1, pagination?.take ?? 20);
   }
 
+  function handleBeTrash(id: number){
+    const confirm = window.confirm("Apakah anda yakin ingin menghapus kelas ini?");
+    if (!confirm) {
+      return;
+    }
+    axiosInstance.delete(`${ENDPOINT.DELETE_SUBJECT}/${id}`).then(() => {
+      toaster.toast({
+        title: "Success",
+        description: "Kelas berhasil dihapus",
+        variant: "default",
+      })
+      reFetch();
+    })
+    .catch(() => {
+      toaster.toast({
+        title: "Error",
+        description: "Gagal menghapus kelas",
+        variant: "destructive",
+      })
+    });
+  }
 
   return (
     <div className="p-4">
@@ -114,8 +138,9 @@ export default function Page() {
                   <TableRow key={index} className="table table-fixed w-full">
                     <TableCell className="w-1/6">{index + 1}</TableCell>
                     <TableCell className="w-4/6">{subject.name}</TableCell>
-                    <TableCell className="w-1/6">
+                    <TableCell className="w-1/6 flex gap-2 items-center">
                       <EditSubject subjectId={subject.id} reFetch={reFetch} />
+                      <button onClick={()=>handleBeTrash(subject.id)}><Trash className="w-4 h-4"></Trash></button>
                     </TableCell>
                   </TableRow>
                 ))}
