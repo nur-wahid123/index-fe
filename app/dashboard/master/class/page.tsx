@@ -26,13 +26,15 @@ import AddSubject from "@/source/components/subject/add-subject.component";
 import { ClassEntity } from "@/source/types/class.type";
 import AddClass from "@/source/components/class/add-class.component";
 import EditClass from "@/source/components/class/update-class.component";
+import { Trash } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 
 export default function Page() {
   const [search, setSearch] = useState("");
   const [pagination, setPagination] = useState<PaginateContentProps>({});
   const [classes, setClass] = useState<ClassEntity[]>([]);
-
+  const toaster = useToast();
   const fetchData = React.useCallback(async (
     start: number,
     limit: number,
@@ -66,6 +68,28 @@ export default function Page() {
 
   function reFetch() {
     fetchData(1, pagination?.take ?? 20);
+  }
+
+  function handleDelete(id: number){
+    const confirm = window.confirm("Apakah anda yakin ingin menghapus kelas ini?");
+    if (!confirm) {
+      return;
+    }
+    axiosInstance.delete(`${ENDPOINT.DELETE_CLASS}/${id}`).then(() => {
+      toaster.toast({
+        title: "Success",
+        description: "Kelas berhasil dihapus",
+        variant: "default",
+      })
+      reFetch();
+    })
+    .catch(() => {
+      toaster.toast({
+        title: "Error",
+        description: "Gagal menghapus kelas",
+        variant: "destructive",
+      })
+    });
   }
 
 
@@ -119,8 +143,9 @@ export default function Page() {
                     <TableCell className="w-1/6">{index + 1}</TableCell>
                     <TableCell className="w-3/6">{classEntity.name}</TableCell>
                     <TableCell className="w-1/6">{classEntity.study_group?.name || "-"}</TableCell>
-                    <TableCell className="w-1/6">
+                    <TableCell className="w-1/6 flex gap-2 items-center">
                       <EditClass classId={classEntity.id} reFetch={reFetch} />
+                      <button onClick={() => {handleDelete(classEntity.id)}}><Trash className="w-4"></Trash></button>
                     </TableCell>
                   </TableRow>
                 ))}
