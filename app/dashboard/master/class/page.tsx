@@ -1,112 +1,136 @@
 "use client";
-import TableUniversal from "@/source/components/TableUniversal";
-import ENDPOINT from "@/source/config/url";
-import { Stundent } from "@/source/objects/Students";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Subject } from "@/source/types/subject";
-import { axiosInstance, getFetch } from "@/source/util/request.util";
-import { Eye } from "lucide-react";
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import React, { useEffect, useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import PaginationSelf, { PaginateContentProps } from "@/components/pagination";
+import SearchBar from "@/components/search-bar";
+import { Subject } from "@/source/types/subject";
+import { axiosInstance } from "@/source/util/request.util";
+import ENDPOINT from "@/source/config/url";
+import EditSubject from "@/source/components/subject/update-subject.component";
+import AddSubject from "@/source/components/subject/add-subject.component";
+import { ClassEntity } from "@/source/types/class.type";
+import AddClass from "@/source/components/class/add-class.component";
+import EditClass from "@/source/components/class/update-class.component";
+
+
 export default function Page() {
-  const [data, setData] = useState<Subject[]>([]);
-  const [search, setSearch] = useState<string>("");
-  const fetchData = async (search?: string) => {
-    
-    await axiosInstance.get(ENDPOINT.MASTER_SUBJECT).then((res) => {
+  const [search, setSearch] = useState("");
+  const [pagination, setPagination] = useState<PaginateContentProps>({});
+  const [classes, setClass] = useState<ClassEntity[]>([]);
+
+  const fetchData = React.useCallback(async (
+    start: number,
+    limit: number,
+  ) => {
+    try {
+      const res = await axiosInstance.get(
+        `${ENDPOINT.MASTER_CLASS}?page=${start}&take=${limit}&search=${search}`
+      );
+      console.log(res.data);
       
-      setData(res.data);
-    })
-    .catch(err => console.log(err));
-  };
 
+      if (Array.isArray(res.data.data)) {
+        setClass(res.data.data);
+      }
+      if (res.data.pagination) {
+        setPagination(res.data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }
+    , [search]);
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      fetchData(search);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [search]);
+    fetchData(pagination?.page ?? 1, pagination?.take ?? 20);
+  }, [fetchData, pagination?.page, pagination?.take, search]);
 
-  useEffect(() => {
-    fetchData();
-    return () => { };
-  }, []);
+  function handleSearch(query: string) {
+    if (query !== search) {
+      setPagination({ ...pagination, page: 1 })
+      setSearch(query);
+    }
+  }
 
-  const tableHeader: string[] = [
-    "Nama",
-    "Kelas",
-    "Kelas Pengguna",
-    "Mapel Wajib",
-    "Detail",
-  ];
+  function reFetch() {
+    fetchData(1, pagination?.take ?? 20);
+  }
+
 
   return (
-    <div className="p-3">
-      <label className="label" htmlFor="search">
-        Search
-      </label>
-      <input
-        value={search}
-        className="input input-sm input-bordered"
-        onChange={(e) => setSearch(e.target.value)}
-        type="text"
-        name="search"
-        id="search"
-      />
-      {/* <TableUniversal
-        tableHeader={tableHeader}
-        data={data}
-        additionalColumn={additionalColumn}
-      /> */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {tableHeader.map((thead, i) => (
-              <TableHead key={i}>
-                {thead}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((subject, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                {subject.name}
-              </TableCell>
-              <TableCell>{subject.study_groups.map((study_group, i) => (
-                <div
-                  className="badge text-white badge-success m-1 hover:cursor-pointer"
-                  key={study_group.id}
-                >
-                  {study_group.name}
-                </div>
-              ))}
-              </TableCell>
-              <TableCell>{subject.study_groups.length}</TableCell>
-              <TableCell>{subject.is_primary? "Ya" : "Tidak"}</TableCell>
-              <TableCell>
-                <Dialog>
-                  <DialogTrigger>
-                    <Button>
-                      Detail <Eye />
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        Helo
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="p-4">
+      <h1 className="scroll-m-20 text-2xl mb-4 font-extrabold tracking-tight lg:text-5xl">
+        Kelas
+      </h1>
+      <div className="w-full flex flex-col gap-4">
+        {/* ({flatData.length} of {totalDBRowCount} rows fetched) */}
+        <div className="flex gap-6 items-center justify-between">
+          <SearchBar onSearch={handleSearch} />
+          <div className="flex gap-4 items-center">
+            <p>Rows</p>
+            <Select value={pagination?.take?.toString()} onValueChange={(e) => setPagination({ ...pagination, take: Number(e), page: 1 })}>
+              <SelectTrigger className="w-[90px]">
+                <SelectValue placeholder="Rows" />
+              </SelectTrigger>
+              <SelectContent>
+                {[10, 20, 30, 40, 50].map((item) => (
+                  <SelectItem key={item} value={item.toString()}>
+                    {item}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <AddClass reFetch={reFetch} />
+          </div>
+          <PaginationSelf pagination={pagination} fetchData={fetchData} />
+        </div>
+        <div>
+          {/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
+          <Table className="w-full table-fixed">
+            <TableHeader className="bg-slate-100 text-black">
+              <TableRow>
+                <TableHead className="w-1/6">No.</TableHead>
+                <TableHead className="w-3/6">Nama Kelas</TableHead>
+                <TableHead className="w-1/6">Rombel</TableHead>
+                <TableHead className="w-1/6">Aksi</TableHead>
+              </TableRow>
+            </TableHeader>
+          </Table>
+          <div
+            className="max-h-[450px] w-full overflow-y-auto block"
+          >
+            <Table>
+              <TableBody
+              >
+                {classes.map((classEntity, index) => (
+                  <TableRow key={index} className="table table-fixed w-full">
+                    <TableCell className="w-1/6">{index + 1}</TableCell>
+                    <TableCell className="w-3/6">{classEntity.name}</TableCell>
+                    <TableCell className="w-1/6">{classEntity.study_group?.name || "-"}</TableCell>
+                    <TableCell className="w-1/6">
+                      <EditClass classId={classEntity.id} reFetch={reFetch} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

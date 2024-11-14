@@ -21,8 +21,8 @@ import SearchBar from "@/components/search-bar";
 import { Subject } from "@/source/types/subject";
 import { axiosInstance } from "@/source/util/request.util";
 import ENDPOINT from "@/source/config/url";
-import EditSubject from "@/components/subject/update-subject.component";
-import AddSubject from "@/components/subject/add-subject.component";
+import EditSubject from "@/source/components/subject/update-subject.component";
+import AddSubject from "@/source/components/subject/add-subject.component";
 
 
 export default function Page() {
@@ -65,9 +65,10 @@ export default function Page() {
     fetchData(1, pagination?.take ?? 20);
   }
 
+
   return (
-    <div>
-      <h1 className="scroll-m-20 m-4 text-2xl font-extrabold tracking-tight lg:text-5xl">
+    <div className="p-4">
+      <h1 className="scroll-m-20 text-2xl mb-4 font-extrabold tracking-tight lg:text-5xl">
         Mata Pelajaran
       </h1>
       <div className="w-full flex flex-col gap-4">
@@ -88,37 +89,39 @@ export default function Page() {
                 ))}
               </SelectContent>
             </Select>
-          <AddSubject reFetch={reFetch} />
+            <AddSubject reFetch={reFetch} />
           </div>
           <PaginationSelf pagination={pagination} fetchData={fetchData} />
         </div>
-        <div
-          className="w-full"
-          style={{
-            height: "600px", //should be a fixed height
-          }}
-        >
+        <div>
           {/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
-          <Table>
+          <Table className="w-full table-fixed">
             <TableHeader className="bg-slate-100 text-black">
               <TableRow>
-                <TableHead>No.</TableHead>
-                <TableHead>Nama Mapel</TableHead>
-                <TableHead>Aksi</TableHead>
+                <TableHead className="w-1/6">No.</TableHead>
+                <TableHead className="w-4/6">Nama Mapel</TableHead>
+                <TableHead className="w-1/6">Aksi</TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {subjects.map((subject, index) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{subject.name}</TableCell>
-                  <TableCell>
-                    <EditSubject subjectId={subject.id} reFetch={reFetch} />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
           </Table>
+          <div
+            className="max-h-[450px] w-full overflow-y-auto block"
+          >
+            <Table>
+              <TableBody
+              >
+                {subjects.map((subject, index) => (
+                  <TableRow key={index} className="table table-fixed w-full">
+                    <TableCell className="w-1/6">{index + 1}</TableCell>
+                    <TableCell className="w-4/6">{subject.name}</TableCell>
+                    <TableCell className="w-1/6">
+                      <EditSubject subjectId={subject.id} reFetch={reFetch} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
     </div>

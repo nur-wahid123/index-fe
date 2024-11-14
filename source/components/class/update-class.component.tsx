@@ -1,54 +1,55 @@
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
+import { Button } from "../../../components/ui/button";
+import { Label } from "../../../components/ui/label";
 import { Edit, LucideEdit3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Input } from "../ui/input";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { Input } from "../../../components/ui/input";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../components/ui/tooltip";
 import { Subject } from "@/source/types/subject";
 import { axiosInstance } from "@/source/util/request.util";
 import ENDPOINT from "@/source/config/url";
+import { ClassEntity } from "@/source/types/class.type";
 
-export default function EditSubject({ subjectId, reFetch }: { subjectId: number | undefined, reFetch: () => void }) {
-    const [openEditSubject, setOpenEditSubject] = React.useState(false);
-    const [subject, setSubject] = React.useState({} as Subject);
+export default function EditClass({ classId, reFetch }: { classId: number | undefined, reFetch: () => void }) {
+    const [openEditClass, setOpenEditClass] = React.useState(false);
+    const [classEntity, setClassEntity] = React.useState({} as ClassEntity);
     const toast = useToast()
     const [value, setValue] = React.useState({
         name: "",
     })
 
     React.useEffect(() => {
-        if (subject) {
+        if (classEntity) {
             setValue({
-                name: subject.name ?? "",
+                name: classEntity.name ?? "",
             })
         }
-    }, [subject]);
+    }, [classEntity]);
 
     
     const fetchData = React.useCallback(async () => {
-        const subjectRes = await axiosInstance.get(`${ENDPOINT.DETAIL_SUBJECT}/${subjectId}`);
-        setSubject(subjectRes.data);
-    },[subjectId])
+        const classRes = await axiosInstance.get(`${ENDPOINT.DETAIL_CLASS}/${classId}`);
+        setClassEntity(classRes.data);
+    },[classId])
     
     React.useEffect(() => {
-        if(openEditSubject===true){
+        if(openEditClass===true){
             fetchData();
         }
-    }, [ openEditSubject, fetchData]);
+    }, [ openEditClass, fetchData]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        await axiosInstance.patch(`${ENDPOINT.UPDATE_SUBJECT}/${subjectId}`, value)
-            .then((res) => {
+        await axiosInstance.patch(`${ENDPOINT.UPDATE_CLASS}/${classId}`, value)
+            .then(() => {
                 toast.toast({
                     title: "Success",
-                    description: "Berhasil edit merek",
+                    description: "Berhasil edit kelas",
                     variant: "default",
                 });
                 reFetch();
-                setOpenEditSubject(false);
+                setOpenEditClass(false);
             })
             .catch((err) => {
                 if (err.code === 400) {
@@ -59,7 +60,7 @@ export default function EditSubject({ subjectId, reFetch }: { subjectId: number 
             })
     }
     return (
-        <Dialog open={openEditSubject} onOpenChange={setOpenEditSubject}>
+        <Dialog open={openEditClass} onOpenChange={setOpenEditClass}>
             <DialogTrigger asChild>
                 <div>
                     <TooltipProvider>
@@ -68,7 +69,7 @@ export default function EditSubject({ subjectId, reFetch }: { subjectId: number 
                                 <button><Edit className="w-4"></Edit></button>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Edit {value?.name?.split(" ")[0] ?? "Maple"}</p>
+                                <p>Edit {value?.name ?? "Kelas"}</p>
                             </TooltipContent>
                         </Tooltip>
                     </TooltipProvider>
@@ -76,17 +77,17 @@ export default function EditSubject({ subjectId, reFetch }: { subjectId: number 
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Edit Mapel</DialogTitle>
+                    <DialogTitle>Edit Kelas</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <Label>Nama Merek</Label>
+                    <Label>Nama Kelas</Label>
                     <Input
                         type="text"
                         value={value.name}
                         onChange={(e) => setValue({ ...value, name: e.target.value })}
                     />
                     <Button type="submit">
-                        Edit Merek <LucideEdit3></LucideEdit3>
+                        Edit Kelas <LucideEdit3></LucideEdit3>
                     </Button>
                 </form>
             </DialogContent>

@@ -6,6 +6,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { Toaster } from "@/components/ui/toaster"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import BreadCrumbData from "@/source/components/breadcrumbs.component"
 
@@ -28,6 +29,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
             </TooltipProvider>
           </SidebarInset>
         </SidebarProvider>
+        <Toaster/>
       </body>
     </html>
   )

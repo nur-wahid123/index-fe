@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
-import { Label } from "../ui/label";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../../../components/ui/dialog";
+import { Label } from "../../../components/ui/label";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { PlusIcon, Tag } from "lucide-react";
 import { axiosInstance } from "@/source/util/request.util";
@@ -24,7 +24,7 @@ export default function AddSubject({ reFetch }: { reFetch: () => void }) {
                 reFetch();
                 toast.toast({
                     title: "Success",
-                    description: "Berhasil Tambahkan Merek",
+                    description: "Berhasil Tambahkan Mapel",
                     variant: "default",
                 })
                 setOpenAddBrand(false);

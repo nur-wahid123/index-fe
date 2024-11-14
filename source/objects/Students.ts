@@ -1,3 +1,4 @@
+import { ClassEntity } from "../types/class.type";
 import { Father } from "./Father";
 import { Gender } from "./gender.enum";
 import { Guardian } from "./Guardian";
@@ -52,4 +53,5 @@ export class Stundent {
     headCircumference?: number
     numberOfSiblings?: number
     distanceFromSchool?: number
+    student_class?: ClassEntity
 }

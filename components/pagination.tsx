@@ -9,10 +9,10 @@ import React, { useEffect } from "react";
 export class PaginateContentProps {
     page?: number = 1;
     take?: number = 20;
-    itemCount?: number;
-    pageCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
+    item_count?: number;
+    page_count?: number;
+    has_previous_page?: boolean;
+    has_next_page?: boolean;
 }
 export class PaginationProps {
     pagination:
@@ -21,10 +21,11 @@ export class PaginationProps {
 }
 
 export const PaginationSelf = ({ pagination, fetchData }: PaginationProps) => {
+    
     const currentPage = pagination?.page ?? 1;
-    const totalPages = pagination?.pageCount ?? 1;
-    const isPreviousPageEnabled = pagination?.hasPreviousPage;
-    const isNextPageEnabled = pagination?.hasNextPage;
+    const totalPages = pagination?.page_count ?? 1;
+    const isPreviousPageEnabled = pagination?.has_previous_page;
+    const isNextPageEnabled = pagination?.has_next_page;
     const paginationLinks = Array.from(
         { length: totalPages ?? 0 },
         (_, index) => index + 1

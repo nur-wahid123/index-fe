@@ -16,8 +16,14 @@ const ENDPOINT = {
     UPDATE_SUBJECT: `${CONFIG.BASE_URL}/subjects/update`,
     MASTER_SUBJECT: `${CONFIG.BASE_URL}/subjects/list`,
 
+    //Subject
+    CREATE_CLASS: `${CONFIG.BASE_URL}/class/create`,
+    DETAIL_CLASS: `${CONFIG.BASE_URL}/class/detail`,
+    UPDATE_CLASS: `${CONFIG.BASE_URL}/class/update`,
+    MASTER_CLASS: `${CONFIG.BASE_URL}/class/list`,
+
     //Study Group
-    MASTER_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups`,
+    MASTER_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups/list`,
     LINK_STUDY_SUBJECT: `${CONFIG.BASE_URL}/study-groups/link-subject`,
     DETACH_STUDY_SUBJECT: `${CONFIG.BASE_URL}/study-groups/detach-subject`,
     LINK_STUDY_SUBJECT_BATCH: `${CONFIG.BASE_URL}/study-groups/link-batch-subject`,

@@ -15,18 +15,60 @@ import {
 } from "@/components/ui/dialog"
 import { Eye } from "lucide-react";
 import { Label } from "@/components/ui/label";
+import { Subject } from "@/source/types/subject";
+import { useToast } from "@/hooks/use-toast";
+import { PaginateContentProps } from "@/components/pagination";
+import SearchBar from "@/components/search-bar";
 
 export default function Page() {
-  const [subject, setSubject] = useState<{ name: string; id: number }[]>([]);
+  const [subject, setSubject] = useState<Subject[]>([]);
   const [data, setData] = useState<StudyGroup[]>([]);
   const [search, setSearch] = useState<string>("");
+  const toaster = useToast();
+  const [pagination, setPagination] = useState<PaginateContentProps>({});
+
+  const fetchData = React.useCallback(async (
+    start: number,
+    limit: number,
+  ) => {
+    try {
+      const res = await axiosInstance.get(
+        `${ENDPOINT.MASTER_STUDY_GROUP}?page=${start}&take=${limit}&search=${search}`
+      );
+      if (Array.isArray(res.data.data)) {
+        setData(res.data.data);
+      }
+      if (res.data.pagination) {
+        setPagination(res.data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }
+    , [search]);
+  useEffect(() => {
+    fetchData(pagination?.page ?? 1, pagination?.take ?? 20);
+  }, [fetchData, pagination?.page, pagination?.take, search]);
+
+  function handleSearch(query: string) {
+    if (query !== search) {
+      setPagination({ ...pagination, page: 1 })
+      setSearch(query);
+    }
+  }
+
+  function reFetch() {
+    fetchData(1, pagination?.take ?? 20);
+  }
+
+
 
   async function linkSubject(studyGroupId: number, subject: number) {
     await axiosInstance.post(ENDPOINT.LINK_STUDY_SUBJECT, {
       subject_id: subject,
       study_group_id: studyGroupId,
     }).then(() => {
-      fetchData();
+      fetchData(pagination?.page ?? 1, pagination?.take ?? 20);
     });
   }
 
@@ -35,31 +77,26 @@ export default function Page() {
       subject_id: subject,
       study_group_id: studyGroupId,
     }).then(() => {
-      fetchData();
+      fetchData(pagination?.page ?? 1, pagination?.take ?? 20);
     });
   }
 
   async function fetchSubject() {
     await axiosInstance.get(ENDPOINT.MASTER_SUBJECT).then((res) => {
-      if (Array.isArray(res)) {
-        const arr: { name: string; id: number }[] = [];
-        res.map((item) => {
-          arr.push({ name: item.name, id: item.id });
-        });
-        setSubject(arr);
-      }
+      setSubject(res.data.data);
+    })
+    .catch((err) => {
+      toaster.toast({
+        title: "Error",
+        description: err.response.data.message,
+        variant: "destructive",
+      })
     });
   }
 
-  const fetchData = async () => {
-    axiosInstance.get(ENDPOINT.MASTER_STUDY_GROUP).then((res) => {
-      setData(res.data);
-    });
-  };
-
   useEffect(() => {
     if (subject.length > 0) {
-      fetchData();
+      fetchData(pagination?.page ?? 1, pagination?.take ?? 20);
     }
   }, [subject]);
 
@@ -82,14 +119,7 @@ export default function Page() {
           <label className="label" htmlFor="search">
             Search
           </label>
-          <input
-            value={search}
-            className="input input-sm input-bordered"
-            onChange={(e) => setSearch(e.target.value)}
-            type="text"
-            name="search"
-            id="search"
-          />
+          <SearchBar onSearch={handleSearch} />
         </div>
         <form>
           <Label>Upload Rombel</Label>
@@ -135,7 +165,7 @@ export default function Page() {
                         <div>
                           <p className="py-4">Kelas: {study_group.name}</p>
                           <p className="py-4">
-                            Siswa yang ada di rombel ini: {study_group.students.length}
+                            Siswa yang ada di rombel ini: {study_group.classes.length}
                           </p>
                           <div className="py-4">
                             <p>Klik untuk hapus pelajaran</p>
