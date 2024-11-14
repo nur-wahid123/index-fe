@@ -3,7 +3,7 @@ import ENDPOINT from "@/source/config/url";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StudyGroup } from "@/source/types/study-group";
-import { axiosInstance, getFetch, postFetch } from "@/source/util/request.util";
+import { axiosInstance } from "@/source/util/request.util";
 import React, { useEffect, useState } from "react";
 import {
   Dialog,
@@ -13,12 +13,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Eye } from "lucide-react";
+import { Eye, Trash } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Subject } from "@/source/types/subject";
 import { useToast } from "@/hooks/use-toast";
-import { PaginateContentProps } from "@/components/pagination";
+import PaginationSelf, { PaginateContentProps } from "@/components/pagination";
 import SearchBar from "@/components/search-bar";
+import AddStudyGroup from "@/source/components/study-group/add-study-group.component";
+import EditStudyGroup from "@/source/components/study-group/update-study-group.component";
 
 export default function Page() {
   const [subject, setSubject] = useState<Subject[]>([]);
@@ -85,13 +87,13 @@ export default function Page() {
     await axiosInstance.get(ENDPOINT.MASTER_SUBJECT).then((res) => {
       setSubject(res.data.data);
     })
-    .catch((err) => {
-      toaster.toast({
-        title: "Error",
-        description: err.response.data.message,
-        variant: "destructive",
-      })
-    });
+      .catch((err) => {
+        toaster.toast({
+          title: "Error",
+          description: err.response.data.message,
+          variant: "destructive",
+        })
+      });
   }
 
   useEffect(() => {
@@ -105,25 +107,36 @@ export default function Page() {
     return () => { };
   }, []);
 
+  async function handleDelete(id:number){
+    const confirm = window.confirm("Apakah anda yakin ingin menghapus rombel ini?");
+    if (!confirm) {
+      return;
+    }
+    await axiosInstance.delete(`${ENDPOINT.DELETE_STUDY_GROUP}/${id}`).then(() => {
+      
+    })
+  }
+
   const tableHeader: string[] = [
     "Nama",
     "Mata Pelajaran",
     "Jumlah Mapel",
-    "Detail",
+    "Aksi",
   ];
 
   return (
     <div className="p-3">
       <div>
-        <div>
-          <label className="label" htmlFor="search">
-            Search
-          </label>
-          <SearchBar onSearch={handleSearch} />
+        <div className="flex items-end gap-4 justify-between">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="search">
+              Search
+            </Label>
+            <SearchBar onSearch={handleSearch} />
+          </div>
+          <AddStudyGroup reFetch={reFetch} />
+          <PaginationSelf pagination={pagination} fetchData={fetchData} />
         </div>
-        <form>
-          <Label>Upload Rombel</Label>
-        </form>
       </div>
       <Table>
         <TableHeader>
@@ -151,7 +164,7 @@ export default function Page() {
               ))}
               </TableCell>
               <TableCell>{study_group.subjects.length}</TableCell>
-              <TableCell>
+              <TableCell className="flex gap-2">
                 <Dialog>
                   <DialogTrigger>
                     <Button>
@@ -214,6 +227,8 @@ export default function Page() {
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
+                <EditStudyGroup studyGroupId={study_group.id} reFetch={reFetch} />
+                <Button onClick={() => handleDelete(study_group.id)}>Hapus <Trash /></Button>
               </TableCell>
             </TableRow>
           ))}

@@ -22,15 +22,9 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;}
+  children: React.ReactNode;
+}
 ) {
-  const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Student", href: "/master/student" },
-    { name: "Subject", href: "/master/subject" },
-    { name: "Study Group", href: "/master/study-group" },
-    { name: "Report", href: "/report" },
-  ];
   return (
     <html lang="en">
       <body
@@ -38,7 +32,7 @@ export default function RootLayout({
       >
         <TooltipProvider>
           {children}
-          </TooltipProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

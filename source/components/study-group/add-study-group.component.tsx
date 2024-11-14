@@ -10,35 +10,28 @@ import { PlusIcon, Tag } from "lucide-react";
 import { axiosInstance } from "@/source/util/request.util";
 import ENDPOINT from "@/source/config/url";
 import { StudyGroup } from "@/source/types/study-group";
-import { ComboboxStudyGroup } from "../study-group/combobox-stg.component";
+import { ComboboxStudyGroup } from "./combobox-stg.component";
 
-export default function AddClass({ reFetch }: { reFetch: () => void }) {
-    const [openAddClass, setOpenAddClass] = React.useState(false);
+export default function AddStudyGroup({ reFetch }: { reFetch: () => void }) {
+    const [openAddStudyGroup, setOpenAddStudyGroup] = React.useState(false);
     const toast = useToast()
-    const [studyGroup, setStudyGroup] = React.useState<number>(0)
     const [value, setValue] = React.useState({
         name: "",
-        study_group_id: 0
     })
-
-    React.useEffect(() => {
-        setValue({ ...value, study_group_id: studyGroup })
-    }, [studyGroup])
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        await axiosInstance.post(ENDPOINT.CREATE_CLASS, value)
+        await axiosInstance.post(ENDPOINT.CREATE_STUDY_GROUP, value)
             .then(() => {
                 reFetch();
                 toast.toast({
                     title: "Success",
-                    description: "Berhasil Tambahkan kelas",
+                    description: "Berhasil Tambahkan Rombel",
                     variant: "default",
                 })
-                setOpenAddClass(false);
+                setOpenAddStudyGroup(false);
                 setValue({
                     name: "",
-                    study_group_id: 0
                 })
             })
             .catch((error) => {
@@ -59,25 +52,23 @@ export default function AddClass({ reFetch }: { reFetch: () => void }) {
     };
 
     return (
-        <Dialog open={openAddClass} onOpenChange={setOpenAddClass}>
+        <Dialog open={openAddStudyGroup} onOpenChange={setOpenAddStudyGroup}>
             <DialogTrigger asChild>
-                <Button className="flex gap-3 shadow hover:shadow-md" variant="outline"><Tag className="w-4" />Tambah Kelas <PlusIcon className="w-4" /></Button>
+                <Button className="flex gap-3 shadow hover:shadow-md" variant="outline"><Tag className="w-4" />Tambah Rombel <PlusIcon className="w-4" /></Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Tambah Kelas</DialogTitle>
+                    <DialogTitle>Tambah Rombel</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <Label>Nama Kelas</Label>
+                    <Label>Nama Rombel</Label>
                     <Input
                         type="text"
                         value={value.name}
                         onChange={(e) => setValue({ ...value, name: e.target.value })}
                     />
-                    <Label>Pilih Rombel</Label>
-                    <ComboboxStudyGroup setId={setStudyGroup} />
                     <Button type="submit">
-                        Tambah Kelas
+                        Tambah Rombel
                     </Button>
                 </form>
             </DialogContent>

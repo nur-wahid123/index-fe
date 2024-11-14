@@ -10,6 +10,7 @@ import axios from "axios"
 import ENDPOINT from "@/source/config/url"
 import ckie from "js-cookie"
 import React from "react"
+import { useToast } from "@/hooks/use-toast"
 
 
 export const description = "A simple login form."
@@ -24,12 +25,18 @@ export default function LoginForm() {
     username: "",
     password: "",
   });
+  const toaster = useToast()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     await axios.post(`${ENDPOINT.LOGIN}`, state)
       .then(res => {
         ckie.set("token", res.data.data.access_token, { expires: 1 })
+        toaster.toast({ title: "Success", description: "Berhasil Login", variant: "default" })
         router.push("/dashboard")
+      })
+      .catch((err)=>{
+        console.log('a');
+        toaster.toast({ title: "Error", description: "Gagal Login", variant: "destructive" })
       })
   }
   return (

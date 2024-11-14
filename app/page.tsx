@@ -1,5 +1,5 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Toaster } from "@/components/ui/toaster";
 import Link from "next/link";
 
 export default function HeroSectionGradientBackground() {
@@ -45,7 +45,6 @@ export default function HeroSectionGradientBackground() {
             </div>
           </div>
         </div>
-        <Toaster/>
       </div>
       {/* End Hero */}
     </>

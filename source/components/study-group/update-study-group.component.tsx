@@ -6,46 +6,42 @@ import { Edit, LucideEdit3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "../../../components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../../../components/ui/tooltip";
-import { Subject } from "@/source/types/subject";
 import { axiosInstance } from "@/source/util/request.util";
 import ENDPOINT from "@/source/config/url";
-import { ClassEntity } from "@/source/types/class.type";
-import { ComboboxStudyGroup } from "../study-group/combobox-stg.component";
+import { StudyGroup } from "@/source/types/study-group";
 
-export default function EditClass({ classId, reFetch }: { classId: number | undefined, reFetch: () => void }) {
-    const [openEditClass, setOpenEditClass] = React.useState(false);
-    const [classEntity, setClassEntity] = React.useState({} as ClassEntity);
+export default function EditStudyGroup({ studyGroupId, reFetch }: { studyGroupId: number | undefined, reFetch: () => void }) {
+    const [openEditStudyGroup, setOpenEditStudyGroup] = React.useState(false);
+    const [studyGroupEntity, setStudyGroupEntity] = React.useState({} as StudyGroup);
     const toast = useToast()
     const [value, setValue] = React.useState({
         name: "",
     })
 
-    const [studyGroupId, setStudyGroupId] = React.useState<number>(0);
 
     React.useEffect(() => {
-        if (classEntity) {
+        if (studyGroupEntity) {
             setValue({
-                name: classEntity.name ?? "",
+                name: studyGroupEntity.name ?? "",
             })
         }
-    }, [classEntity]);
+    }, [studyGroupEntity]);
 
     
     const fetchData = React.useCallback(async () => {
-        const classRes = await axiosInstance.get(`${ENDPOINT.DETAIL_CLASS}/${classId}`);
-        setClassEntity(classRes.data);        
-        setStudyGroupId(classRes.data.study_group_id);
-    },[classId])
+        const classRes = await axiosInstance.get(`${ENDPOINT.DETAIL_STUDY_GROUP}/${studyGroupId}`);
+        setStudyGroupEntity(classRes.data);        
+    },[studyGroupId])
     
     React.useEffect(() => {
-        if(openEditClass===true){
+        if(openEditStudyGroup===true){
             fetchData();
         }
-    }, [openEditClass, fetchData]);
+    }, [openEditStudyGroup, fetchData]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        await axiosInstance.patch(`${ENDPOINT.UPDATE_CLASS}/${classId}`, {name: value.name, study_group_id: studyGroupId})
+        await axiosInstance.patch(`${ENDPOINT.UPDATE_STUDY_GROUP}/${studyGroupId}`, value)
             .then(() => {
                 toast.toast({
                     title: "Success",
@@ -53,7 +49,7 @@ export default function EditClass({ classId, reFetch }: { classId: number | unde
                     variant: "default",
                 });
                 reFetch();
-                setOpenEditClass(false);
+                setOpenEditStudyGroup(false);
             })
             .catch((err) => {
                 if (err.code === 400) {
@@ -64,13 +60,13 @@ export default function EditClass({ classId, reFetch }: { classId: number | unde
             })
     }
     return (
-        <Dialog open={openEditClass} onOpenChange={setOpenEditClass}>
+        <Dialog open={openEditStudyGroup} onOpenChange={setOpenEditStudyGroup}>
             <DialogTrigger asChild>
                 <div>
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger>
-                                <button><Edit className="w-4"></Edit></button>
+                                <Button>Edit <Edit className=""></Edit></Button>
                             </TooltipTrigger>
                             <TooltipContent>
                                 <p>Edit {value?.name ?? "Kelas"}</p>
@@ -90,8 +86,6 @@ export default function EditClass({ classId, reFetch }: { classId: number | unde
                         value={value.name}
                         onChange={(e) => setValue({ ...value, name: e.target.value })}
                     />
-                    <Label>Pilih Rombel</Label>
-                    <ComboboxStudyGroup setId={setStudyGroupId} currentName={classEntity?.study_group?.name ?? 'oi'} />
                     <Button type="submit">
                         Edit Kelas <LucideEdit3></LucideEdit3>
                     </Button>

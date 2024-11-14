@@ -41,8 +41,6 @@ export default function Page() {
       const res = await axiosInstance.get(
         `${ENDPOINT.MASTER_CLASS}?page=${start}&take=${limit}&search=${search}`
       );
-      console.log(res.data);
-      
 
       if (Array.isArray(res.data.data)) {
         setClass(res.data.data);

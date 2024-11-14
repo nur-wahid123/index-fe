@@ -29,6 +29,8 @@ import {
 } from "@/components/ui/sidebar"
 import cooki from "js-cookie"
 import { CaretSortIcon, ComponentPlaceholderIcon } from "@radix-ui/react-icons"
+import { axiosInstance } from "@/source/util/request.util"
+import ENDPOINT from "@/source/config/url"
 
 export function NavUser({
   user,
@@ -43,8 +45,9 @@ export function NavUser({
   const { isMobile } = useSidebar()
 
 
-  function logout(){
+  async function logout(){
     cooki.remove("token")
+    await axiosInstance.delete(ENDPOINT.LOGOUT)
     window.location.reload()
   }
 

@@ -14,16 +14,22 @@ const ENDPOINT = {
     CREATE_SUBJECT: `${CONFIG.BASE_URL}/subjects/create`,
     DETAIL_SUBJECT: `${CONFIG.BASE_URL}/subjects/detail`,
     UPDATE_SUBJECT: `${CONFIG.BASE_URL}/subjects/update`,
+    DELETE_SUBJECT: `${CONFIG.BASE_URL}/subjects/delete`,
     MASTER_SUBJECT: `${CONFIG.BASE_URL}/subjects/list`,
 
     //Subject
     CREATE_CLASS: `${CONFIG.BASE_URL}/class/create`,
     DETAIL_CLASS: `${CONFIG.BASE_URL}/class/detail`,
     UPDATE_CLASS: `${CONFIG.BASE_URL}/class/update`,
+    DELETE_CLASS: `${CONFIG.BASE_URL}/class/delete`,
     MASTER_CLASS: `${CONFIG.BASE_URL}/class/list`,
 
     //Study Group
+    CREATE_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups/create`,
+    DETAIL_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups/detail`,
+    UPDATE_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups/update`,
     MASTER_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups/list`,
+    DELETE_STUDY_GROUP: `${CONFIG.BASE_URL}/study-groups/delete`,
     LINK_STUDY_SUBJECT: `${CONFIG.BASE_URL}/study-groups/link-subject`,
     DETACH_STUDY_SUBJECT: `${CONFIG.BASE_URL}/study-groups/detach-subject`,
     LINK_STUDY_SUBJECT_BATCH: `${CONFIG.BASE_URL}/study-groups/link-batch-subject`,
