@@ -108,7 +108,7 @@ export default function Page() {
     return () => { };
   }, []);
 
-  async function handleDelete(id:number){
+  async function handleDelete(id: number) {
     const confirm = window.confirm("Apakah anda yakin ingin menghapus rombel ini?");
     if (!confirm) {
       return;
@@ -121,13 +121,13 @@ export default function Page() {
       })
       reFetch();
     })
-    .catch(() => {
-      toaster.toast({
-        title: "Error",
-        description: "Gagal menghapus rombel",
-        variant: "destructive",
-      })
-    });
+      .catch(() => {
+        toaster.toast({
+          title: "Error",
+          description: "Gagal menghapus rombel",
+          variant: "destructive",
+        })
+      });
   }
 
   const tableHeader: string[] = [
@@ -141,6 +141,9 @@ export default function Page() {
     <div className="p-3">
       <div>
         <div className="flex items-end gap-4 justify-between">
+          <h1 className="scroll-m-20 text-2xl mb-4 font-extrabold tracking-tight lg:text-5xl">
+            Rombongan Belajar
+          </h1>
           <div className="flex flex-col gap-2">
             <Label htmlFor="search">
               Search
@@ -148,17 +151,17 @@ export default function Page() {
             <SearchBar onSearch={handleSearch} />
           </div>
           <Select value={pagination?.take?.toString()} onValueChange={(e) => setPagination({ ...pagination, take: Number(e), page: 1 })}>
-              <SelectTrigger className="w-[90px]">
-                <SelectValue placeholder="Rows" />
-              </SelectTrigger>
-              <SelectContent>
-                {[10, 20, 30, 40, 50].map((item) => (
-                  <SelectItem key={item} value={item.toString()}>
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SelectTrigger className="w-[90px]">
+              <SelectValue placeholder="Rows" />
+            </SelectTrigger>
+            <SelectContent>
+              {[10, 20, 30, 40, 50].map((item) => (
+                <SelectItem key={item} value={item.toString()}>
+                  {item}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <AddStudyGroup reFetch={reFetch} />
           <PaginationSelf pagination={pagination} fetchData={fetchData} />
         </div>

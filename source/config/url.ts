@@ -1,6 +1,9 @@
 import CONFIG from "./config"
 
 const ENDPOINT = {
+    //Dashboard
+    DASHBOARD: `${CONFIG.BASE_URL}/dashboard/data`,
+
     //Report
     REPORT : `${CONFIG.BASE_URL}/semester-report/list`,
     CREATE_REPORT : `${CONFIG.BASE_URL}/semester-report/create/batch`,

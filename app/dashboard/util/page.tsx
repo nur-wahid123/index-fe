@@ -13,6 +13,7 @@ import { Guardian } from "@/source/objects/Guardian";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { axiosInstance } from "@/source/util/request.util";
 
 export default function Home() {
   const [files, setFiles] = useState<{ [key: string]: FileList | null }>({
@@ -31,7 +32,7 @@ export default function Home() {
       [inputName]: event.target.files, // Update the corresponding input field in the state
     }));
   };
-  useEffect(() => {}, [files]);
+  useEffect(() => { }, [files]);
   function chunkArray(array: Stundent[], chunkSize: number) {
     const results = [];
     for (let i = 0; i < array.length; i += chunkSize) {
@@ -42,15 +43,14 @@ export default function Home() {
   }
 
   async function sendData(data: Stundent[], index: number) {
-    await fetch(ENDPOINT.STUDENT_CREATE_BATCH, {
-      body: JSON.stringify(data),
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => console.log("success transfer number : ", index));
+    try {
+
+      await axiosInstance.post(ENDPOINT.STUDENT_CREATE_BATCH, data)
+        .then(() => console.log("success transfer number : ", index))
+    } catch (error) {
+      console.log(error);
+
+    }
   }
   async function sendSubjectData(data: Subject[], index: number) {
     await fetch(ENDPOINT.SUBJECT_CREATE_BATCH, {
@@ -118,11 +118,10 @@ export default function Home() {
               student.dateOfBirth = formatDate(new Date(String(rowData[7])));
               student.nik = rowData[8] as string;
               student.religion = rowData[9] as string;
-              student.address = `${rowData[10]} ${
-                rowData[11] !== undefined && rowData[12] !== undefined
-                  ? `RT/RW ${rowData[11]}/${rowData[12]}`
-                  : ""
-              }`; //rowData[9] rowData[10] as string;
+              student.address = `${rowData[10]} ${rowData[11] !== undefined && rowData[12] !== undefined
+                ? `RT/RW ${rowData[11]}/${rowData[12]}`
+                : ""
+                }`; //rowData[9] rowData[10] as string;
               student.hamlet = rowData[13] as string;
               student.ward = rowData[14] as string;
               student.subDistrict = rowData[15] as string;

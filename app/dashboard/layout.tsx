@@ -1,5 +1,6 @@
 "use client"
 import { AppSidebar } from "@/components/app-sidebar"
+import "./../globals.css";
 import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,

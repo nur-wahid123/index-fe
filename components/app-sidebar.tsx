@@ -29,6 +29,7 @@ import { PaperPlaneIcon } from "@radix-ui/react-icons"
 import { axiosInstance } from "@/source/util/request.util"
 import ENDPOINT from "@/source/config/url"
 import { JwtPayload } from "@/source/types/jwt-payload.interface"
+import Link from "next/link"
 
 const data = {
   navMain: [
@@ -105,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
@@ -113,7 +114,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-semibold">SMAN 1 Srengat</span>
                   <span className="truncate text-xs">Blitar</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

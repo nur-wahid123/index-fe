@@ -2,6 +2,7 @@ import { Father } from "@/source/objects/Father";
 import { Gender } from "@/source/objects/gender.enum";
 import { Guardian } from "@/source/objects/Guardian";
 import { Mother } from "@/source/objects/Mother";
+import { ClassEntity } from "@/source/types/class.type";
 import { SemesterReport } from "@/source/types/semester-report.type";
 import { StudyGroup } from "@/source/types/study-group";
 
@@ -55,6 +56,7 @@ export interface StundentView {
     numberOfSiblings?: number
     distanceFromSchool?: number
     semesterReports: SemesterReport[]
+    student_class: ClassEntity
 }
 
 export interface Religion{

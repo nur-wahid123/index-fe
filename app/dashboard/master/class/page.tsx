@@ -125,10 +125,11 @@ export default function Page() {
           <Table className="w-full table-fixed">
             <TableHeader className="bg-slate-100 text-black">
               <TableRow>
-                <TableHead className="w-1/6">No.</TableHead>
-                <TableHead className="w-3/6">Nama Kelas</TableHead>
-                <TableHead className="w-1/6">Rombel</TableHead>
-                <TableHead className="w-1/6">Aksi</TableHead>
+                <TableHead className="w-1/7">No.</TableHead>
+                <TableHead className="w-3/7">Nama Kelas</TableHead>
+                <TableHead className="w-1/7">Jumlah Siswa</TableHead>
+                <TableHead className="w-1/7">Rombel</TableHead>
+                <TableHead className="w-1/7">Aksi</TableHead>
               </TableRow>
             </TableHeader>
           </Table>
@@ -140,10 +141,11 @@ export default function Page() {
               >
                 {classes.map((classEntity, index) => (
                   <TableRow key={index} className="table table-fixed w-full">
-                    <TableCell className="w-1/6">{index + 1}</TableCell>
-                    <TableCell className="w-3/6">{classEntity.name}</TableCell>
-                    <TableCell className="w-1/6">{classEntity.study_group?.name || "-"}</TableCell>
-                    <TableCell className="w-1/6 flex gap-2 items-center">
+                    <TableCell className="w-1/7">{index + 1}</TableCell>
+                    <TableCell className="w-3/7">{classEntity.name}</TableCell>
+                    <TableCell className="w-3/7">{classEntity.students.length}</TableCell>
+                    <TableCell className="w-1/7">{classEntity.study_group?.name || "-"}</TableCell>
+                    <TableCell className="w-1/7 flex gap-2 items-center">
                       <EditClass classId={classEntity.id} reFetch={reFetch} />
                       <button onClick={() => {handleDelete(classEntity.id)}}><Trash className="w-4"></Trash></button>
                     </TableCell>
